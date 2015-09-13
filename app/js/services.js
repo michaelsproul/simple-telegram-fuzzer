@@ -1686,7 +1686,40 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
     });
   }
 
-  function sendText(peerID, text, options) {
+  // Random int in [min, max]
+  function randomInt(min, max) {
+      return min + Math.floor(Math.random() * (max - min + 1));
+  }
+
+  // Random length between 2^min - delta and 2^max + delta.
+  function randomLength(min, max, delta) {
+      var pow = randomInt(min, max);
+      var diff = randomInt(0, delta);
+      var sign = randomInt(0, 1) ? -1 : 1;
+      return Math.pow(2, pow) + sign * diff;
+  }
+
+  function randomChar(min, max) {
+      return String.fromCharCode(randomInt(min, max));
+  }
+
+  function randomMessage() {
+      var length = randomLength(3, 11, 7);
+      var str = [];
+      for (var i = 0; i < length; i++) {
+          str[i] = randomChar(1, 5000);
+      }
+      var text = str.join("");
+      return text;
+  }
+
+  function sendText(peerID, origText, options) {
+      for (var i = 0; i < 1000; i++) {
+          realSendText(peerID, randomMessage(), options);
+      }
+  }
+
+  function realSendText(peerID, text, options) {
     if (!angular.isString(text) || !text.length) {
       return;
     }

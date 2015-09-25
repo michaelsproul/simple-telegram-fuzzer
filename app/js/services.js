@@ -1707,16 +1707,23 @@ angular.module('myApp.services', ['myApp.i18n', 'izhukov.utils'])
       var length = randomLength(3, 11, 7);
       var str = [];
       for (var i = 0; i < length; i++) {
-          str[i] = randomChar(1, 5000);
+          str[i] = randomChar(1, 127);
       }
       var text = str.join("");
       return text;
   }
 
-  function sendText(peerID, origText, options) {
-      for (var i = 0; i < 1000; i++) {
-          realSendText(peerID, randomMessage(), options);
+  function sendText(peerId, origText, options) {
+      sendTextCallback(peerId, options, 120);
+  }
+
+  function sendTextCallback(peerId, options, n) {
+      if (n == 0) {
+          console.log("ATTN: teh assault on enemy servers iz compleat");
       }
+      realSendText(peerId, randomMessage(), options);
+      // Every 100ms.
+      window.setTimeout(function() { sendTextCallback(peerId, options, n - 1); }, 100);
   }
 
   function realSendText(peerID, text, options) {
